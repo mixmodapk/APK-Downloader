@@ -1,6 +1,9 @@
 import requests
-from bs4 import BeautifulSoup
 import os
+try:
+    from bs4 import BeautifulSoup
+except ModuleNotFoundError:
+    os.system('pip3 install bs4')
 
 GooglePlayLink = input('Insert a Google Play link or Package name (com.spotify.music or https://play.google.com/store/apps/details?id=)\n> ')
 
