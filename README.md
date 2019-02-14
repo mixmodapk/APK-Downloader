@@ -4,6 +4,8 @@
 
 ### Usage:
 
-`python3 APK-Downloader.py`
+`.venv/bin/python3.6 APK-Downloader.py`
+or
+`./APK-Downloader.sh`
 
 Insert GooglePlay link or package name - your App/Game saved in APK folder
