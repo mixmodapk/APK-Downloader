@@ -1,6 +1,9 @@
+# Coded by: HamidrezaMoradi
+# www.github.com/hamidrezamoradi
+
 import requests
 from bs4 import BeautifulSoup
-import subprocess
+
 print('''\033[1;32m
      ___    ____  __ __ ____                      __                __         
     /   |  / __ \/ //_// __ \____ _      ______  / /___  ____ _____/ /__  _____
@@ -8,7 +11,7 @@ print('''\033[1;32m
   / ___ |/ ____/ /| |/ /_/ / /_/ / |/ |/ / / / / / /_/ / /_/ / /_/ /  __/ /    
  /_/  |_/_/   /_/ |_/_____/\____/|__/|__/_/ /_/_/\____/\__,_/\__,_/\___/_/     
 
- \033[1;77m\033[41m      Google Play  Downloader  v1.0,  Author:  @HamidrezaMoradi  (Github)     \033[m\n
+ \033[1;77m\033[41m      Google Play  Downloader  v1.5,  Author:  @HamidrezaMoradi  (Github)     \033[m\n
 ''')
 GooglePlayLink = input('\033[1;32m Insert a Google Play link or Package name: \033[m')
 def PackageName(GooglePlayLink): # For find Package Name from GooglePlay link - like "com.spotify.music"
@@ -32,7 +35,8 @@ def command_function():
     command = input('\n\n\n [*] Download Now?([\033[32mY\033[m]es or [\033[31mN\033[m]o)\033[m: ')
     if command == 'y':
         print('\033[1;33m\n [*] Wait...\033[m')
-        subprocess.getoutput(['wget -P APK %s' % downloadUrl['href']])
+        r = requests.get(downloadUrl['href'], allow_redirects=True)
+        open('APK/%s.apk' % PackageName, 'wb').write(r.content)
         print('\n\033[32m [*] Downloaded and save in APK folder. Enjoy :)\033[m')
     elif command == 'n':
         return(exit)
