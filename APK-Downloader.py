@@ -33,12 +33,12 @@ def PackageName(GooglePlayLink): # For find Package Name from GooglePlay link - 
 PackageName = PackageName(GooglePlayLink)
 def command_function():
     command = input('\n\n\n [*] Download Now?([\033[32mY\033[m]es or [\033[31mN\033[m]o)\033[m: ')
-    if command == 'y':
+    if command.lower() == 'y':
         print('\033[1;33m\n [*] Wait...\033[m')
         r = requests.get(downloadUrl['href'], allow_redirects=True)
         open('APK/%s.apk' % PackageName, 'wb').write(r.content)
         print('\n\033[32m [*] Downloaded and save in APK folder. Enjoy :)\033[m')
-    elif command == 'n':
+    elif command.lower() == 'n':
         return(exit)
     else:
         print('\n\033[31m [!] Wrong command.\033[n')
@@ -64,5 +64,5 @@ if PackageName is not None: # If "PackageName" function do not be return "None" 
         print('\n\033[31m [!] No internet.\n [!] Check your network connection.\033[m')
     except TypeError:
         print('\n\033[31m [!] App/Game not found.\033[m')
-    except:
-        print('\n\033[31m [!] App/Game not found.\033[m')
+    except AttributeError:
+        print('\n\033[31m [!] Your input not true.\033[m')
