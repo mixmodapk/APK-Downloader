@@ -1,5 +1,5 @@
 # Coded by: HamidrezaMoradi
-# www.github.com/hamidrezamoradi
+# www.github.com/hamidrezamoradi 
 
 import requests
 from bs4 import BeautifulSoup
@@ -31,35 +31,46 @@ def PackageName(GooglePlayLink): # For find Package Name from GooglePlay link - 
     else:
         print('\n\033[31m [!] Your input not true.\033[m')
 PackageName = PackageName(GooglePlayLink)
-def command_function():
-    command = input('\n\n\n [*] Download Now?([\033[32mY\033[m]es or [\033[31mN\033[m]o)\033[m: ')
+
+def command_function(downloadUrl):
+    if downloadUrl['title'][-1] == 'b':
+        Type = 'Data'
+    elif downloadUrl['title'][-1] == 'k':
+        Type = 'APK'
+    command = input('\n\n\n [*] Download %s File Now?([\033[32mY\033[m]es or [\033[31mN\033[m]o)\033[m: '%Type)
     if command.lower() == 'y':
         print('\033[1;33m\n [*] Wait...\033[m')
         r = requests.get(downloadUrl['href'], allow_redirects=True)
-        open('APK/%s.apk' % PackageName, 'wb').write(r.content)
-        print('\n\033[32m [*] Downloaded and save in APK folder. Enjoy :)\033[m')
+        open('File/%s' % downloadUrl['title'], 'wb').write(r.content)
+        print('\n\033[32m [*] Downloaded and save in File folder. Enjoy :)\033[m')
     elif command.lower() == 'n':
-        return(exit)
+        pass
     else:
         print('\n\033[31m [!] Wrong command.\033[n')
         return command_function()
+        
 if PackageName is not None: # If "PackageName" function do not be return "None" value
     apkdl = 'https://apkdl.in/app/details?id=%s' % PackageName
     try:
         r = requests.get(apkdl)
-        soup = BeautifulSoup(r.text, 'html.parser')
-        downloadUrl = soup.find("a", itemprop='downloadUrl')
+        App_Page = BeautifulSoup(r.text, 'html.parser')
+        downloadUrl = App_Page.find("a", itemprop='downloadUrl')
         # For find App/Game info
-        print('\n \033[1;33minfo:\033[m\n  \033[34mName: \033[m'+soup.find('b').string)
-        print('  \033[34mVersion: \033[m'+soup.find('span', itemprop='softwareVersion').string)
-        print('  \033[34mUpdated on: \033[m'+soup.find('span', itemprop='dateModified').string)
-        print('  \033[34mDownload size: \033[m'+soup.find('span', itemprop='fileSize').string)
+        print('\n \033[1;33minfo:\033[m\n  \033[34mName: \033[m'+App_Page.find('b').string)
+        print('  \033[34mVersion: \033[m'+App_Page.find('span', itemprop='softwareVersion').string)
+        print('  \033[34mUpdated on: \033[m'+App_Page.find('span', itemprop='dateModified').string)
+        print('  \033[34mDownload size: \033[m'+App_Page.find('span', itemprop='fileSize').string)
         # For find App/Game Download Link
         downloadUrl = ('https://apkdl.in'+downloadUrl['href'])
         r = requests.get(downloadUrl)
-        soup = BeautifulSoup(r.text, 'html.parser')
-        downloadUrl = soup.find("a", rel='nofollow')
-        command_function()
+        DownloadPage = BeautifulSoup(r.text, 'html.parser')
+        downloadUrl = DownloadPage.find_all("a", rel='nofollow')
+        if len(downloadUrl) is 2:
+            command_function(downloadUrl[1])
+
+        command_function(downloadUrl[0])
+
+
     except requests.exceptions.ConnectionError:
         print('\n\033[31m [!] No internet.\n [!] Check your network connection.\033[m')
     except TypeError:
