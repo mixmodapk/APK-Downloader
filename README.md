@@ -1,6 +1,6 @@
 # APK DOWNLOADER
 
-## Download APK files frome Google Play
+## Download APK files from Google Play
 
 ### Install and Usage:
 
