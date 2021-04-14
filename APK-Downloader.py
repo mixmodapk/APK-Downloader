@@ -105,13 +105,13 @@ try:
             GP_input = input(f'{GREEN} [*] Enter a \"Google Play URL\" or \"APP Code\":\n {YELLOW}> {CLOSE_COLOR}')
             pakage_id = details(GP_input)
             service_number = input(f'\n{GREEN} [*] Select one among the following sites:\n 1. apkdl.in\n 2. apkplz.net\n 3. apktada.com\n 4. m.apkpure.com\n {YELLOW}> {CLOSE_COLOR}')
-            if service_number is '1':
+            if service_number == '1':
                 download_URL = Services.apkdl_in(pakage_id)
-            elif service_number is '2':
+            elif service_number == '2':
                 download_URL = Services.apkplz_net(pakage_id)
-            elif service_number is '3':
+            elif service_number == '3':
                 download_URL = Services.apktada_com(pakage_id)
-            elif service_number is '4':
+            elif service_number == '4':
                 download_URL = Services.m_apkpure_com(pakage_id)
             else:
                 print(f'\n{RED} [!] The entry is not correct.\n Please choose between one of the top websites!{CLOSE_COLOR}')
