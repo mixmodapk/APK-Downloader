@@ -30,7 +30,8 @@ EVOZI_HEADERS = {
 def verify_package_id(package_id):
     if "https://" in package_id or "http://" in package_id:
         return BeautifulSoup(
-            requests.get(package_id, headers={"User-Agent": USER_AGENT}).text, "html.parser"
+            requests.get(package_id, headers={"User-Agent": USER_AGENT}).text,
+            "html.parser",
         ).find("meta", attrs={"name": "appstore:bundle_id"})["content"]
     elif "." in package_id:
         return package_id
@@ -40,9 +41,10 @@ def verify_package_id(package_id):
 
 
 def download_file(url, output):
-    with requests.get(url, stream=True) as r:
+    with requests.get(url, headers={"User-Agent": USER_AGENT}, stream=True) as r:
         with open(output, "wb") as f:
-            shutil.copyfileobj(r.raw, f)
+            for chunk in r.iter_content(chunk_size=8192):
+                f.write(chunk)
 
     return True
 
@@ -64,7 +66,9 @@ def apkplz_net(package_id):
     url = "https://apkplz.net/app/%s" % package_id
     r = requests.get(url)
     App_Page = BeautifulSoup(r.text, "html.parser")
-    downloadUrl = App_Page.find("div", attrs={"class": "col-sm-12 col-md-12 text-center"})
+    downloadUrl = App_Page.find(
+        "div", attrs={"class": "col-sm-12 col-md-12 text-center"}
+    )
 
     downloadUrl = downloadUrl.find("a", rel="nofollow")["href"]
     r = requests.get(downloadUrl, headers={"User-Agent": USER_AGENT})
@@ -110,8 +114,18 @@ def evozi_com(package_id):
     if web_data.status_code == 200:
         res = web_data.text.splitlines()
         token1 = res[195].strip().split(":")[1].strip().split(",")[0]
-        token2 = res[164].strip().split("=")[-1].strip().replace("'", "").replace(";", "")
-        token3 = res[195].strip().split("=")[-1].strip().replace(" ", "").strip("{").split(",")[:-1]
+        token2 = (
+            res[164].strip().split("=")[-1].strip().replace("'", "").replace(";", "")
+        )
+        token3 = (
+            res[195]
+            .strip()
+            .split("=")[-1]
+            .strip()
+            .replace(" ", "")
+            .strip("{")
+            .split(",")[:-1]
+        )
 
         payload = {}
         payload[token3[0].split(":")[0]] = token1
@@ -148,15 +162,21 @@ def main():
             download_url = service_func(package_id)
             print(f"{GREEN} [*] got url: {download_url}{CLOSE_COLOR}")
             download_file(download_url, package_id + ".apk")
-            print(f"\n{GREEN} [*] {package_id} was downloaded successfully. Enjoy :){CLOSE_COLOR}")
+            print(
+                f"\n{GREEN} [*] {package_id} was downloaded successfully. Enjoy :){CLOSE_COLOR}"
+            )
             break
 
         except requests.exceptions.ConnectionError:
             print(f"\n{RED} [!] No Connection.{CLOSE_COLOR}")
         except TypeError:
-            print(f"\n{RED} [!] App/Game not found.\n [!] Try again later.{CLOSE_COLOR}")
+            print(
+                f"\n{RED} [!] App/Game not found.\n [!] Try again later.{CLOSE_COLOR}"
+            )
         except Exception:
-            print(f"\n{RED} [!] There's a problem.\n [!] Try another website.{CLOSE_COLOR}")
+            print(
+                f"\n{RED} [!] There's a problem.\n [!] Try another website.{CLOSE_COLOR}"
+            )
 
 
 if __name__ == "__main__":
